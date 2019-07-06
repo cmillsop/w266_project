@@ -22,16 +22,18 @@ for raw_file in raw:
             with open(rf'{path}\..\parsed\{out_name}','wb+') as f:
                 f.write(table.get_text().encode('utf-8'))
     else:
+        print(raw_file)
         current = soup.find(string=re.compile("Nominees\s+for\s+Director:")).find_next('img').parent
         idx = 0
-        while not current.find(string=re.compile('RECOMMENDATION\s+OF\s+THE\s+BOARD')):
+        while not current.find(string=re.compile('RECOMMENDATION OF THE BOARD')):
             out_name = f'{raw_file[:raw_file.find(".htm")]}_{idx}.txt'
-            with open(rf'{path}\..\parsed\{out_name}','wb+') as f:
+            with open(rf'{path}\..\parsed\out_name','wb+') as f:
                 flag = True
                 while flag:
                     current = current.find_next_sibling()
                     if current.find('img'):
                         flag = False
                     else:
+                        print(current.get_text())
                         f.write(current.get_text().encode('utf-8'))
             idx += 1
