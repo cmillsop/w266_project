@@ -1,14 +1,14 @@
 import openpyxl
-import re
-import csv
+import nltk
+
+nltk.download('punkt')
 
 wb = openpyxl.load_workbook('spx_gov_2019.xlsx')
 sheet = wb['Sheet1']
 
-rules = ['(?!I?n?c\.)(?!Y?a?h?o?o!)([aA-zZ\d!]+)([!\.,\-:\?\(\)\#\&])','([!\.,\-:\?\(\)\#\&])([aA-zZ\d]+)',"(\w+)(n't)","(\w+)('s)","(\w+)('.*)"]
-
 all_bios = []
 max_length = 0
+bio_count = 0
 
 for i, row in enumerate(sheet.values):
     for j,value in enumerate(row):
@@ -28,16 +28,19 @@ for i, row in enumerate(sheet.values):
                 bio = bio.replace(u'\u2009', ' ')
                 # replace en space
                 bio = bio.replace(u'\u2002', ' ')
-                for rule in rules:
-                    bio = re.sub(rule, "\g<1> \g<2>", bio)
-                all_bios += ["\n"] + bio.split(" ")
-                if len(bio.split(" ")) > max_length:
-                    max_length = len(bio.split(" "))
+                company= sheet['A' + str(i+1)].value
+                bio_count +=1                
+                for sentence in nltk.sent_tokenize(bio):
+                    words = nltk.word_tokenize(sentence)
+                    all_bios.append([words, company, bio_count])
+                    if len(words) > max_length:
+                        max_length = len(words)
 
 with open('bios.csv', 'w', newline='') as csvfile:
-    #spamwriter = csv.writer(csvfile,quoting=csv.QUOTE_MINIMAL, escapechar='\\')
-    for line in all_bios:
-        csvfile.write(line + "\n")
-
-print("exported bios.csv")
-print(f"maximum bio length: {max_length} words/tokens")
+    csvfile.write("token\tcompany\tdirector\tlabel\n")
+    for director in all_bios:
+        for line in director[0]:
+            csvfile.write(f"{line}\t{director[1]}\t{director[2]}\n")
+        csvfile.write("\n")
+print("exported: bios.csv")
+print(f"maximum sentence length: {max_length} tokens")
