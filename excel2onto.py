@@ -5,7 +5,7 @@ import csv
 wb = openpyxl.load_workbook('spx_gov_2019.xlsx')
 sheet = wb['Sheet1']
 
-rules = ['(?!I?n?c\.)(?!Y?a?h?o?o!)([aA-zZ\d!]+)([!\.,\-:])','([\.,\-:])([aA-zZ\d]+)',"(\w+)(n't)","(\w+)('s)","(\w+)('.*)"]
+rules = ['(?!I?n?c\.)(?!Y?a?h?o?o!)([aA-zZ\d!]+)([!\.,\-:\?\(\)\#\&])','([!\.,\-:\?\(\)\#\&])([aA-zZ\d]+)',"(\w+)(n't)","(\w+)('s)","(\w+)('.*)"]
 
 all_bios = []
 max_length = 0
