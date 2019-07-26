@@ -12,7 +12,7 @@ bio_count = 0
 
 for i, row in enumerate(sheet.values):
     for j,value in enumerate(row):
-        if i > 0 and j  > 13:
+        if i > 0 and j  > 13 and j < 30:
             if value is not None:
                 # replace non-breaking spaces
                 bio = value.replace(u'\xa0',' ')
